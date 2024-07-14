@@ -3,3 +3,4 @@ cat << LIMITER | wc -l > output.txt
 Line 1
 Line 2
 LIMITER
+meow infile

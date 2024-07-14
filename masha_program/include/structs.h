@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexing.c                                           :+:      :+:    :+:   */
+/*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: spitul <spitul@student.42berlin.de >       +#+  +:+       +#+        */
+/*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/09 19:09:09 by spitul           ###   ########.fr       */
+/*   Created: 2024/07/13 20:00:21 by myakoven          #+#    #+#             */
+/*   Updated: 2024/07/13 20:02:08 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef STRUCTS_H
+# define STRUCTS_H
 
-void	skip_spaces()
+typedef struct s_tools
 {
-		
-}
+	char	**env;
+	size_t	env_len;
+	char	*line;
+	char	**lexed;
+}			t_tools;
+
+typedef struct cmd_struct_s
+{
+}			cmd_struct_t;
+
+#endif
