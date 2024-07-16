@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:22:37 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/13 20:03:27 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/14 23:30:44 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,18 @@ int	error_exit(t_tools *tools, int error)
 	clear_history();
 	if (error == 1)
 	{
-		perror("Problem with malloc");
+		ft_putstr_fd("minishell: Problem with malloc", 2);
 		exit(1);
 	}
 	else if (error == 2)
 	{
-		perror("Unclosed quotes, please try again");
+		ft_putstr_fd("minishell: Unclosed quotes, please try again", 2);
 		exit(1);
+	}
+	else if (error == 3)
+	{
+		// ft_putstr_fd("Control D was pressed", 2);
+		exit(0);
 	}
 	return (1);
 }

@@ -10,7 +10,7 @@ LIBFT = ./libft/libft.a
 
 HEADERS 	:= ./include
 OBJDIR		:= ./obj
-SRC     	:= main.c  utils.c error.c lexer.c
+SRC     	:= main.c  utils.c utils2.c error.c lexer.c pwd.c init.c env.c
 				
 OBJS     	:= $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
