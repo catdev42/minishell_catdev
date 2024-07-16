@@ -6,11 +6,11 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:51:01 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/14 23:47:04 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/14 23:45:04 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "./include/minishell.h"
 
 volatile sig_atomic_t	global_signal = 0;
 
@@ -36,23 +36,27 @@ int	shell_loop(t_tools *tools)
 {
 	while (1)
 	{
+		if (tools->line != NULL)
+			free(tools->line);
 		tools->line = readline("minishell: ");
-		if (!tools->line || !strncmp(tools->line, "exit", 5))
+		if (!tools->line || !strncmp(tools->line, "exit", 4))
 			error_exit(tools, 3);
 		global_signal = 0;
 		lexer(tools);
 		if (full_line(tools->line))
 			add_history(tools->line);
 		// printf("%s\n", tools->line);
-		pwd(tools);
-		if (tools->line)
-			free(tools->line);
-		if (global_signal == SIGTERM) // TODO
+		free(tools->line);
+		ft_freetab(tools->lexed, INT_MAX); // clean lexer cause its done
+		if (global_signal == SIGTERM)      // TODO
 			break ;
 	}
 	clean_tools(tools);
 	return (0);
 }
+
+
+
 
 void	new_line(void)
 {

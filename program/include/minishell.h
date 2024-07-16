@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:12:04 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/14 23:46:32 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:34:12 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ char	**free_array(char **res, int nb);
 /******* built_ins.c ********/
 /************************/
 
-void	pwd(t_tools *tools);
+// void	pwd(t_tools *tools);
+void	pwd(t_tools *tools, cmd_t *cmd);
 
 #endif

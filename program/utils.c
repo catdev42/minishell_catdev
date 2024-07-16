@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 17:15:14 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/14 23:24:06 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:32:42 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	skip_spaces(char *s)
 
 	i = 0;
 	if (!s || !*s)
-		return (i);
+		return (0);
 	while (s[i] == 32 || (s[i] >= 9 && s[i] <= 13))
 		i++;
 	return (i);
@@ -50,6 +50,8 @@ int	get_matrix_len(char **matrix)
 {
 	int	i;
 
+	if (!matrix || !*matrix)
+		return (0);
 	i = 0;
 	while (matrix[i])
 		i++;
