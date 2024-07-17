@@ -6,12 +6,13 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 18:33:56 by myakoven          #+#    #+#             */
-/*   Updated: 2023/11/26 16:51:03 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/17 20:50:39 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+/* destination pointer, source pointer, number of bytes being moved */
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
 	size_t	i;

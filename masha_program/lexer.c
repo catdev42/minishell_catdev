@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/16 22:43:17 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/17 20:25:50 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,24 +48,17 @@ int	getlen_command(t_tools *tools, int i)
 	int	og_index;
 
 	og_index = i;
-	// i++;
-	// the let thing havs to see the actual initial character... otherwise if messed up quotes
 	while (tools->line[i])
 	{
-		// if (!istoken(tools->line[i]) && !isquote(tools->line[i]))
-		// 	i++;
-		// else
 		if (isquote(tools->line[i]))
 			i = check_quotes(tools, i); // now points to the last quote
 		else if (istoken(tools->line[i]))
 		{
 			break ;
 		}
-		printf("%i, %c \n", i, tools->line[i]);
-		i++; // added i++ so now i would = 7 and 7 - 0 is 7,
-				// length of "hello" is 7!
+		i++;
 	}
-	return (i - og_index); // removed +1
+	return (i - og_index);
 }
 
 int	getlen_redirect(t_tools *tools, int i)
@@ -116,7 +109,6 @@ int	count_parts(t_tools *tools)
 				return (0);
 		}
 		else if (tools->line[i] == '<' || tools->line[i] == '>')
-		// had two < instead of < and >
 		{
 			if (tools->line[i + 1] == tools->line[i])
 				i++;
@@ -126,12 +118,12 @@ int	count_parts(t_tools *tools)
 			pipes++;
 		i++;
 	}
+	tools->num_commands = pipes + 1;
 	pipes = (pipes + pipes + 1) + redirs;
 	return (pipes);
 }
 
-// return index of closing quote or exits program cause the program iterates after!
-
+// return index of closing quote or puts error!
 int	check_quotes(t_tools *tools, int i)
 {
 	int		j;

@@ -6,14 +6,14 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 20:00:21 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/16 20:43:57 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/17 21:04:16 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 typedef struct s_tools
 {
@@ -21,11 +21,18 @@ typedef struct s_tools
 	size_t	env_len;
 	char	*line;
 	char	**lexed;
+	int		num_commands;
 }			t_tools;
 
 typedef struct	cmd_s
 {
 	char	**cmds;
-}				cmd_t; 
+}				cmd_t;
+
+// typedef struct s_parsed
+// {
+// 	int		*redirect_fds;
+// 	char	*command;
+// } t_parsed;
 
 #endif

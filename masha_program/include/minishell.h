@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:12:04 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/16 22:35:42 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:26:52 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ void	init_sa(struct sigaction *sa);
 /************************/
 
 char	**copy_env(t_tools *tools, char **env);
-char	*get_env_var(t_tools *tools, char *var);
+// char	*get_env_var(t_tools *tools, char *var);
+char	*get_var(char **env, char *var);
 
 /************************/
 /******* utils.c ********/

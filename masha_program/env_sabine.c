@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/17 22:27:02 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/17 22:08:30 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,29 @@ char	**copy_env(t_tools *tools, char **env)
 	return (envp);
 }
 
-/* Return the pointer to the variable definition or NULL if not found */
-char	*get_var(char **env, char *var)
+char	*get_env_var(t_tools *tools, char *var)
 {
 	int		i;
 	size_t	len;
-	char	*line;
+	char	*pos;
 
-	if (!env || !*env)
+	if (!var || !tools || !(tools->env))
 		return (NULL);
-	line = NULL;
+	// exit(EXIT_FAILURE);
+	//? myakoven i would prob just return null here
+	// i think this should make us go to the next line probably,
+	// instead of totally exit
+	// edit: still thinking about this....
+	pos = NULL;
 	i = 0;
 	len = ft_strlen(var);
-	while (env[i] && !line)
+	while (tools->env[i] && !pos)
 	{
-		line = ft_strnstr(env[i], var, len);
-		if (line && line[len] == '=')
-			line = line + len + 1;
-		else
-			line = NULL;
+		pos = ft_strnstr(tools->env[i], var, len);
 		i++;
 	}
-	return (line);
+	if (*(pos + i) == '=')
+		return (pos + len + 1);
+	else
+		return (NULL);
 }
