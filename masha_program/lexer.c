@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/17 20:25:50 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/18 23:13:18 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,19 @@
 // returns 0 on unclosed quotes, and a 1 on success
 int	lexer(t_tools *tools)
 {
-	int	parts;
 	int	lex_i;
 	int	i;
 	int	len;
 
 	i = 0;
 	lex_i = 0;
-	parts = count_parts(tools);
-	if (parts == 0)
+	tools->lex_len = count_parts(tools);
+	if (tools->lex_len == 0)
 		return (0);
-	tools->lexed = ft_calloc((parts + 2), sizeof(char *));
+	tools->lexed = ft_calloc((tools->lex_len + 2), sizeof(char *));
 	if (!tools->lexed)
 		error_exit(tools, 1);
-	while (lex_i < parts && tools->line[i])
+	while (lex_i < tools->lex_len && tools->line[i])
 	{
 		if (tools->line[i] && !istoken(tools->line[i]))
 			len = getlen_command(tools, i);
@@ -51,7 +50,7 @@ int	getlen_command(t_tools *tools, int i)
 	while (tools->line[i])
 	{
 		if (isquote(tools->line[i]))
-			i = check_quotes(tools, i); // now points to the last quote
+			i = check_quotes(tools->line, i); // now points to the last quote
 		else if (istoken(tools->line[i]))
 		{
 			break ;
@@ -73,7 +72,7 @@ int	getlen_redirect(t_tools *tools, int i)
 			i++;
 		else if (tools->line[i] == '\"' || tools->line[i] == '\'')
 		{
-			i = check_quotes(tools, i);
+			i = check_quotes(tools->line, i);
 			break ;
 		}
 		else if (!ft_isspace(tools->line[i]) && ft_isspace(tools->line[i + 1])
@@ -104,7 +103,7 @@ int	count_parts(t_tools *tools)
 	{
 		if (tools->line[i] == '\"' || tools->line[i] == '\'')
 		{
-			i = check_quotes(tools, i);
+			i = check_quotes(tools->line, i);
 			if (i == 0)
 				return (0);
 		}
@@ -124,12 +123,12 @@ int	count_parts(t_tools *tools)
 }
 
 // return index of closing quote or puts error!
-int	check_quotes(t_tools *tools, int i)
+int	check_quotes(char *line, int i)
 {
-	int		j;
-	char	*line;
+	int	j;
 
-	line = tools->line;
+	// char	*line;
+	// line = tools->line;
 	j = 1;
 	while (line[i + j])
 	{
@@ -141,74 +140,3 @@ int	check_quotes(t_tools *tools, int i)
 	ft_putstr_fd("msh: Unclosed Quotes\n", 2); // changed
 	return (0);
 }
-
-// LEX BEFORE EVERYTHING ELSE?
-
-// from get redirect?
-// else if (ft_isspace(tools->line[i + 1])
-// && (ft_isprint(tools->line[i])
-// 		&& (j > 1 || (tools->line[i] != '<' && tools->line[i] != '>'))))
-// {
-// 	wordflag = true;
-// 	tools->lexed[lex_i][j++] = tools->line[i++];
-// }
-// else
-// 	tools->lexed[lex_i][j++] = tools->line[i++];
-
-// if (tools->line[i] == '<' || tools->line[i] == '>')
-// {
-// 	get_redirect(tools, lex_i, i, j);
-// 	break ;
-// }
-// else if (tools->line[i] == '|' && j == 0)
-// {
-// 	tools->lexed[lex_i][j++] = tools->line[i++];
-// 	break ;
-// }
-// else
-// 	tools->lexed[lex_i][j++] = tools->line[i++];
-// // <>
-// if (j > 0 && istoken(tools->line[i]))
-// 	break ;
-
-// DOES NOT WORK!!! TODO
-// REWRITE INTO GET_LEN???, no writing should take place here...
-// Need to find the length of the redirect > end of the file name in quotes or without!
-// strdup the rest! Should probably completely rewrite this
-/*
-void	get_redirect(t_tools *tools, int lex_i, int i, int j)
-{
-	bool	wordflag;
-	int		end_quote_index;
-	int		og_index;
-	int		len;
-
-	og_index = i;
-	wordflag = false;
-	while (tools->line[i] && wordflag == false)
-	{
-		// 	if (j == 1 && tools->line[i] == tools->line[i - 1])
-		// 		tools->lexed[lex_i][j++] = tools->line[i++];
-		if (tools->line[i] == '\"' || tools->line[i] == '\'')
-		{
-			end_quote_index = check_quotes(tools->line, i);
-			tools->lexed[lex_i] = ft_calloc(end_quote_index - og_index + 2,
-					sizeof(char));
-			if (!tools->lexed[lex_i])
-				error_exit(tools, 1);
-			while (tools->line[i] && j < (end_quote_index - og_index))
-				tools->lexed[lex_i][j++] = tools->line[i++];
-			wordflag = true;
-			break ;
-		}
-		// find_end(tools, lex_i, i);
-		if (j == 1 && tools->line[i] == tools->line[i - 1])
-			tools->lexed[lex_i][j++] = tools->line[i++];
-		else if (ft_isspace(tools->line[i + 1])
-			&& (ft_isprint(tools->line[i])
-				&& (j > 0)))
-			wordflag = true;
-		tools->lexed[lex_i][j++] = tools->line[i++];
-	}
-}
-*/

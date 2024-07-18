@@ -1,0 +1,1 @@
+command+D should also signal end of file and bring a new line

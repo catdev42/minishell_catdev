@@ -6,12 +6,17 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:22:37 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/14 23:30:44 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/18 22:40:29 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*
+1: malloc
+2: quotes (changed behavior now, should delete)
+3: control_D (changed behavior, should delete)
+*/
 int	error_exit(t_tools *tools, int error)
 {
 	clean_tools(tools);
