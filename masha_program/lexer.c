@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/18 23:13:18 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:45:51 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ int	count_parts(t_tools *tools)
 		i++;
 	}
 	tools->num_commands = pipes + 1;
-	pipes = (pipes + pipes + 1) + redirs;
+	pipes = (pipes + pipes + 1) + redirs * 2;
 	return (pipes);
 }
 

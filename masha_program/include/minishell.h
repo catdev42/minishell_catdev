@@ -6,16 +6,16 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:12:04 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/18 22:14:30 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:43:29 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "../libft/libft.h"
+# include "structs.h"
 # include "builtins.h"
 # include "lexer.h"
-# include "structs.h"
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
