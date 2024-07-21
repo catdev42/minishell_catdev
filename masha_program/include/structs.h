@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 20:00:21 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/18 23:10:49 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 18:01:57 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 
 # include "minishell.h"
 
+typedef enum s_tokens
+{
+	NONE,
+	PIPE,
+	GREAT,
+	GREAT_GREAT,
+	LESS,
+	LESS_LESS,
+}	t_tokens;
+
 typedef struct s_tools
 {
 	char	**env;
@@ -22,7 +32,7 @@ typedef struct s_tools
 	char	*line;
 	char	**lexed;
 	size_t lex_len;
-	int		num_commands;
+	int		num_pipes;
 }			t_tools;
 
 typedef struct cmd_s

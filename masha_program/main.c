@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:51:01 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/16 22:42:09 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 17:51:26 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,19 @@ int	shell_loop(t_tools *tools)
 	return (0);
 }
 
-void	new_line(void)
+/* If errline is provided, an error is printed to the screen, is errarg is provided, it is appended to the error string*/
+void	new_line(char *errline, char *errarg)
 {
+	if (errline)
+	{
+		ft_putstr_fd("\nmsh: ", 2);
+		ft_putstr_fd(errline, 2);
+		if (errarg){
+			ft_putstr_fd("`", 2);
+			ft_putstr_fd(errarg, 2);
+			ft_putstr_fd("\'", 2);
+		}
+	}
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);

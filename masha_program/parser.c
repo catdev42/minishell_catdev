@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 20:17:05 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 15:44:09 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:52:49 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@ int	parser(t_tools *tools)
 	// spaces_cleanup(tools);
 	while (matrix[i])
 	{
+		/*
+			check if the first thng is a token,
+			if <
+		
+		 */
+	
+	
 		if (!istoken(matrix[i][0]))
 			if (!expand_command(&matrix[i], tools))
 				error_exit(tools, 1);

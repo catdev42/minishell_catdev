@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/21 15:45:51 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 17:38:20 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,17 +94,17 @@ int	count_parts(t_tools *tools)
 {
 	int	i;
 	int	redirs;
-	int	pipes;
 
 	i = 0;
 	redirs = 0;
-	pipes = 0;
 	while (tools->line[i])
 	{
 		if (tools->line[i] == '\"' || tools->line[i] == '\'')
 		{
 			i = check_quotes(tools->line, i);
 			if (i == 0)
+				return (0);
+			if (!check_redirects(tools, i))
 				return (0);
 		}
 		else if (tools->line[i] == '<' || tools->line[i] == '>')
@@ -114,29 +114,8 @@ int	count_parts(t_tools *tools)
 			redirs++;
 		}
 		else if (tools->line[i] == '|')
-			pipes++;
+			tools->num_pipes++;
 		i++;
 	}
-	tools->num_commands = pipes + 1;
-	pipes = (pipes + pipes + 1) + redirs * 2;
-	return (pipes);
-}
-
-// return index of closing quote or puts error!
-int	check_quotes(char *line, int i)
-{
-	int	j;
-
-	// char	*line;
-	// line = tools->line;
-	j = 1;
-	while (line[i + j])
-	{
-		if (line[i] == line[i + j])
-			return (i + j);
-		j++;
-	}
-	// error_exit(tools, 2);
-	ft_putstr_fd("msh: Unclosed Quotes\n", 2); // changed
-	return (0);
+	return (tools->num_pipes * 2 + 1 + redirs * 2);
 }
