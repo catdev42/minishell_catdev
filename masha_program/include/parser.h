@@ -1,35 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/14 21:35:52 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 19:09:26 by myakoven         ###   ########.fr       */
+/*   Created: 2024/07/11 20:26:33 by myakoven          #+#    #+#             */
+/*   Updated: 2024/07/21 19:35:42 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef LEXER_H
+# define LEXER_H
 
-void	init_tools(t_tools *tools)
-{
-	tools->line = NULL;
-	tools->env = NULL;
-	tools->env_len = 0;
-	tools->lexed = NULL;
-	tools->lex_len = 0;
-	tools->num_pipes = 0;
-	tools->parsed = NULL;
-}
+# include "structs.h"
+/************************/
+/******* parser.c ********/
+/************************/
 
-/* must clean tools first */
-void	reset_tools(t_tools *tools)
-{
-	tools->line = NULL;
-	tools->lexed = NULL;
-	tools->lex_len = 0;
-	tools->num_pipes = 0;
-}
+int	parser(t_tools *tools);
 
-
+#endif

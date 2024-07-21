@@ -6,11 +6,29 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:22:37 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/18 22:40:29 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 20:04:00 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	print_error(char *errline, char *errarg)
+{
+	if (errline)
+	{
+		ft_putstr_fd("msh: ", 2);
+		ft_putstr_fd(errline, 2);
+		if (errarg)
+		{
+			ft_putstr_fd("`", 2);
+			ft_putstr_fd(errarg, 2);
+			ft_putstr_fd("\'", 2);
+			free(errarg);
+		}
+		ft_putstr_fd("\n", 2);
+	}
+	return (0);
+}
 
 /*
 1: malloc

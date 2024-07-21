@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/21 17:48:56 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 20:05:11 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,26 @@ int	check_quotes(char *line, int i)
 			return (i + j);
 		j++;
 	}
-	// error_exit(tools, 2);
-	ft_putstr_fd("msh: Unclosed Quotes\n", 2); // changed
+	print_error(UNCLOSED, NULL);
 	return (0);
 }
-char	*get_redir_error(char *line, int i)
+char	*get_redir_error(char *line, int i, int goodtokens)
 {
+	int	j;
+
+	j = 0;
+	while (istoken(line[i + goodtokens + j]))
+		j++;
+	return (ft_substr(line, (i + goodtokens), j));
 }
+
 int	check_redirects(t_tools *tools)
 {
-	int len = ft_strlen(tools->line);
-	int i = 0;
+	int	len;
+	int	i;
+
+	len = ft_strlen(tools->line);
+	i = 0;
 	while (tools->line[i])
 	{
 		if (tools->line[i] == "\"" || tools->line[i] == "\"")
@@ -44,17 +53,19 @@ int	check_redirects(t_tools *tools)
 		if (istoken(tools->line[i]))
 		{
 			if (ft_strncmp(&tools->line[i], "<<|", 3)
-				|| ft_strncmp(&tools->line[i], ">>>", 3)
-				|| ft_strncmp(&tools->line[i], ">>>>", 4)
-				|| ft_strncmp(&tools->line[i], "||", 2)
-				|| ft_strncmp(&tools->line[i], ">>>>", 4)
-				|| ft_strncmp(&tools->line[i], ">>>>", 4)
-				|| ft_strncmp(&tools->line[i], ">>>>", 4))
-				new_line("syntax error near unexpected token ",
-					get_redir_error(tools->line, i));
+				|| ft_strncmp(&tools->line[i], ">>>", 3))
+				return (print_error(UNEXP, get_redir_error(tools->line, i, 2)));
+			else if (ft_strncmp(&tools->line[i], ">>>>", 4))
+				return (print_error(UNEXP, get_redir_error(tools->line, i, 3)));
+			else if (ft_strncmp(&tools->line[i], "||", 2)
+				|| ft_strncmp(&tools->line[i], "><", 2)
+				|| ft_strncmp(&tools->line[i], "<>", 2))
+				return (print_error(UNEXP, get_redir_error(tools->line, i, 1)));
 		}
 	}
-	/*
+	return (0);
+}
+/*
 	"<<|",
 	"<<<<",
 	">>>",
@@ -63,4 +74,3 @@ int	check_redirects(t_tools *tools)
 	"><",
 	"<>",
 	*/
-}

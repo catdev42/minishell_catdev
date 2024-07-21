@@ -6,16 +6,16 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:12:04 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 15:43:29 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 20:01:42 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "../libft/libft.h"
-# include "structs.h"
 # include "builtins.h"
 # include "lexer.h"
+# include "structs.h"
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -25,6 +25,9 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+
+#define UNEXP "syntax error near unexpected token "
+#define UNCLOSED "unclosed quotes "
 
 // volatile sig_atomic_t	global_signal = 0;
 
@@ -39,9 +42,8 @@ void	init_sa(struct sigaction *sa);
 /************************/
 /******* built_ins.c ********/
 /************************/
-void	pwd(t_tools *tools, cmd_t *cmd);
+// void	pwd(t_tools *tools, cmd_t *cmd); //TODO
 // void	pwd(t_tools *tools);
-
 
 /************************/
 /******* init.c ********/
@@ -69,8 +71,6 @@ int		get_matrix_len(char **matrix);
 /************************/
 int		full_line(char *line);
 void	ft_bspace(void *s, size_t n);
-
-
 
 /************************/
 /******* error.c ********/

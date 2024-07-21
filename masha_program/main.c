@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:51:01 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 17:51:26 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:57:05 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int	shell_loop(t_tools *tools)
 		{
 			printf("%s\n", tools->line);
 			print_tab(tools->lexed);
+			parser(tools);
 		}
 		if (tools->line)
 			free(tools->line);
@@ -56,19 +57,12 @@ int	shell_loop(t_tools *tools)
 	return (0);
 }
 
-/* If errline is provided, an error is printed to the screen, is errarg is provided, it is appended to the error string*/
-void	new_line(char *errline, char *errarg)
+/*
+Input NULL or errline and/or errarg.
+If errline is provided, an error is printed to the screen,
+	is errarg is provided, it is appended to the error string*/
+void	new_line(void)
 {
-	if (errline)
-	{
-		ft_putstr_fd("\nmsh: ", 2);
-		ft_putstr_fd(errline, 2);
-		if (errarg){
-			ft_putstr_fd("`", 2);
-			ft_putstr_fd(errarg, 2);
-			ft_putstr_fd("\'", 2);
-		}
-	}
 	printf("\n");
 	rl_on_new_line();
 	rl_replace_line("", 0);
