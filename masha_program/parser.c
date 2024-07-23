@@ -6,11 +6,11 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 20:17:05 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 21:45:28 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/23 20:59:10 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "structs.h"
+#include "minishell.h"
 
 int	parser(t_tools *tools)
 {
@@ -31,16 +31,17 @@ int	parser(t_tools *tools)
 		i++;
 	}
 	i = 0;
-	tools->parsed = ft_calloc((tools->num_pipes + 1), sizeof(t_parsed *));
-	/* !!!!! */
-	while (matrix[i])
-	{
-		if (istoken(matrix[i][0]))
-			handle_token(tools, i);
-		else
-			handle_command(tools, i);
-		i++;
-	}
+	tools->parsed_commands = ft_calloc((tools->num_pipes + 1),
+			sizeof(t_parsed *));
+	/* !!!!!  */
+	// while (matrix[i])
+	// {
+	// 	if (istoken(matrix[i][0]))
+	// 		handle_token(tools, i);
+	// 	else
+	// 		handle_command(tools, i);
+	// 	i++;
+	// }
 	return (1);
 }
 
@@ -51,21 +52,15 @@ int	write_command_matrix(t_tools *tools, int command_index)
 	int		count;
 
 	line = NULL;
-	line = make_full_line(tools);
-	i = 0;
-	count = count_arguments(line);
-	tools->parsed_commands[command_index]->argv =
-	// count words
-	// while (line[i])
-	// {
-	// 	while (ft_isspace())
-	// 		i++;
-	// 	if (line[i] == "\"" || line[i] == "\'")
-	// 	{
-	// 		i = check_quotes(line, i);
-	// 		count++;
-	// 	}
-	// }
+	while (i < (tools->num_pipes + 1))
+	{
+		line = make_full_line(tools);
+		i = 0;
+		count = count_arguments(line);
+		create_argv(tools, line, i);
+		ft_bzero(line, ft_strlen(line));
+		print_tab(tools->parsed_commands[i].argv);
+	}
 }
 
 char	**create_argv(t_tools *tools, char *line, int c_index)
@@ -79,12 +74,11 @@ char	**create_argv(t_tools *tools, char *line, int c_index)
 	i = 0;
 	j = 0;
 	k = 0;
-	// line = make_full_line(tools);
+	in_quotes = 0;
+	quote_char = '\0';
 	tools->parsed_commands[c_index].argc = count_arguments(line);
 	tools->parsed_commands[c_index].argv = ft_calloc((tools->parsed_commands[c_index].argc
 				+ 1), sizeof(char *));
-	in_quotes = 0;
-	quote_char = '\0';
 	while (line[i])
 	{
 		while (isspace(line[i]))
@@ -106,11 +100,11 @@ char	**create_argv(t_tools *tools, char *line, int c_index)
 			}
 			i++;
 		}
-		argv[k] = strndup(&line[j], i - j);
+		tools->parsed_commands[c_index].argv[k] = strndup(&line[j], i - j);
 		k++;
 	}
-	argv[k] = NULL;
-	return (argv);
+	tools->parsed_commands[c_index].argv[k] = NULL;
+	return (tools->parsed_commands[c_index].argv);
 }
 
 int	count_arguments(char *line)
@@ -149,6 +143,51 @@ int	count_arguments(char *line)
 	return (count);
 }
 
+char	*make_full_line(t_tools *tools)
+{
+	int		i;
+	int		j;
+	char	*command;
+	int		comm_index;
+	char	*old_command;
+
+	old_command = NULL;
+	command = NULL;
+	i = 0;
+	j = 0;
+	comm_index = 0;
+	// make full line
+	while (tools->lexed[i] && tools->lexed[i][0] != '|')
+	{
+		while (tools->lexed[i] && !tools->lexed[i][0])
+			i++;
+		if (j == 0 && !istoken(tools->lexed[i][0]))
+		{
+			// command = tools->lexed[i];
+			comm_index = i;
+		
+		}
+		if (!istoken(tools->lexed[i][0]))
+		{
+			command = ft_strjoin(command, tools->lexed[i]);
+			if (command == NULL)
+				error_exit(tools, 1);
+			ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
+			if (old_command)
+				free(old_command);
+			old_command = command;
+			j++;
+		}
+		if (tools->lexed[i][0] != '|')
+			i++;
+	}
+	// keep pipes until redirects are recorded as well
+	// ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
+	return (command);
+}
+
+// DON'T NEED?
+
 // char	**quotes_split(line)
 // {
 // 	int	i;
@@ -161,43 +200,18 @@ int	count_arguments(char *line)
 // {
 // }
 
-char	*make_full_line(t_tools *tools)
-{
-	int		i;
-	int		j;
-	char	*command;
-	int		comm_index;
+// count words
+// while (line[i])
+// {
+// 	while (ft_isspace())
+// 		i++;
+// 	if (line[i] == "\"" || line[i] == "\'")
+// 	{
+// 		i = check_quotes(line, i);
+// 		count++;
+// 	}
+// }
 
-	command = NULL;
-	i = 0;
-	j = 0;
-	comm_index = 0;
-	// make full line
-	while (tools->lexed[i] && tools->lexed[i][0] != '|')
-	{
-		if (!istoken(tools->lexed[i][0] && j > 0))
-		{
-			tools->lexed[comm_index] = ft_strjoin(command, tools->lexed[i]);
-			if (tools->lexed[comm_index] == NULL)
-				error_exit(tools, 1);
-			ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
-			free(command);
-			command = tools->lexed[comm_index];
-			j++;
-		}
-		else if (!istoken(tools->lexed[i][0]) && j == 0)
-		{
-			command = tools->lexed[i];
-			comm_index = i;
-			j++;
-		}
-		i++;
-	}
-	ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
-	return (command);
-}
-
-// DON'T NEED?
 // /* cleans the first spaces of a command and puts 0's at the end;
 // returns 1 on sucess */
 // int	spaces_cleanup(t_tools *tools)

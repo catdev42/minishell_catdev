@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:12:04 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 20:01:42 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/23 20:30:13 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "../libft/libft.h"
 # include "builtins.h"
 # include "lexer.h"
+# include "parser.h"
 # include "structs.h"
 # include <fcntl.h>
 # include <readline/history.h>

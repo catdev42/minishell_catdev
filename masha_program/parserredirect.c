@@ -1,35 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   parserredirect.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/14 21:35:52 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/23 20:38:29 by myakoven         ###   ########.fr       */
+/*   Created: 2024/07/17 20:17:05 by myakoven          #+#    #+#             */
+/*   Updated: 2024/07/23 20:49:14 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_tools(t_tools *tools)
+t_token get_token(char *redirect)
 {
-	tools->line = NULL;
-	tools->env = NULL;
-	tools->env_len = 0;
-	tools->lexed = NULL;
-	tools->lex_len = 0;
-	tools->num_pipes = 0;
-	tools->parsed_commands = NULL;
+    if (strcmp(redirect, ">") == 0)
+        return GREAT;
+    if (strcmp(redirect, ">>") == 0)
+        return GREAT_GREAT;
+    if (strcmp(redirect, "<") == 0)
+        return LESS;
+    if (strcmp(redirect, "<<") == 0)
+        return LESS_LESS;
+    if (strcmp(redirect, "<<<") == 0)
+        return LESS_LESS_LESS;
+    return NONE;
 }
-
-/* must clean tools first */
-void	reset_tools(t_tools *tools)
-{
-	tools->line = NULL;
-	tools->lexed = NULL;
-	tools->lex_len = 0;
-	tools->num_pipes = 0;
-}
-
-

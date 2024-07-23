@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/21 17:38:20 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/23 20:37:49 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,14 +97,14 @@ int	count_parts(t_tools *tools)
 
 	i = 0;
 	redirs = 0;
+	if (!check_redirects(tools))
+		return (0);
 	while (tools->line[i])
 	{
 		if (tools->line[i] == '\"' || tools->line[i] == '\'')
 		{
 			i = check_quotes(tools->line, i);
 			if (i == 0)
-				return (0);
-			if (!check_redirects(tools, i))
 				return (0);
 		}
 		else if (tools->line[i] == '<' || tools->line[i] == '>')
