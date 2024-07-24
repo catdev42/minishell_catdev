@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 20:17:05 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/23 20:59:10 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/24 20:59:43 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,26 @@
 int	parser(t_tools *tools)
 {
 	int		i;
-	char	**matrix;
+	char	**lexed;
 	int		comm_index;
 	int		num_words;
 
-	i = 0;
 	comm_index = 0;
-	matrix = tools->lexed;
-	// spaces_cleanup(tools);
-	while (matrix[i])
+	lexed = tools->lexed;
+	/*EXPANDS THE VARIABLES IN EACH LINE*/
+	i = 0;
+	while (lexed[i])
 	{
-		while (ft_strchr(matrix[i], '$'))
-			if (!expand_command(&matrix[i], tools))
+		while (ft_strchr(lexed[i], '$'))
+			if (!expand_command(&lexed[i], tools))
 				error_exit(tools, 1);
 		i++;
 	}
-	i = 0;
-	tools->parsed_commands = ft_calloc((tools->num_pipes + 1),
+	/*ALLOCATE THE ARRAY OF COMMAND STRUCTS*/
+	tools->parsed_commands = (t_parsed *)ft_calloc((tools->num_pipes + 1),
 			sizeof(t_parsed *));
-	/* !!!!!  */
-	// while (matrix[i])
-	// {
-	// 	if (istoken(matrix[i][0]))
-	// 		handle_token(tools, i);
-	// 	else
-	// 		handle_command(tools, i);
-	// 	i++;
-	// }
+	tools->parsed_commands[tools->num_pipes + 1] = NULL;
+	i = 0;
 	return (1);
 }
 
@@ -50,61 +43,66 @@ int	write_command_matrix(t_tools *tools, int command_index)
 	char	*line;
 	int		i;
 	int		count;
+	int		lexed_index;
+	int		count_r;
 
 	line = NULL;
+	i = 0;
+	lexed_index = 0;
 	while (i < (tools->num_pipes + 1))
 	{
-		line = make_full_line(tools);
-		i = 0;
+		count_r = count_redirects(tools, i);
+		tools->parsed_commands[i]->redir_tokens = (t_token *)(count_r + 1,
+				sizeof(t_token));
+		lexed_index = make_full_line(tools, i, lexed_index);
+		line = tools->parsed_commands[i]->line;
 		count = count_arguments(line);
 		create_argv(tools, line, i);
-		ft_bzero(line, ft_strlen(line));
-		print_tab(tools->parsed_commands[i].argv);
+		print_tab(tools->parsed_commands[i]->argv);
+		if (!tools->lexed[lexed_index])
+			break ;
+		i++;
 	}
 }
 
-char	**create_argv(t_tools *tools, char *line, int c_index)
+char	*make_full_line(t_tools *tools, int c_index, int lexed_index)
 {
 	int		i;
-	int		j;
-	int		k;
-	int		in_quotes;
-	char	quote_char;
+	char	*command;
+	char	*old_command;
 
-	i = 0;
-	j = 0;
-	k = 0;
-	in_quotes = 0;
-	quote_char = '\0';
-	tools->parsed_commands[c_index].argc = count_arguments(line);
-	tools->parsed_commands[c_index].argv = ft_calloc((tools->parsed_commands[c_index].argc
-				+ 1), sizeof(char *));
-	while (line[i])
+	command = NULL;
+	old_command = NULL;
+	i = lexed_index;
+	while (tools->lexed[i] && tools->lexed[i][0] != '|')
 	{
-		while (isspace(line[i]))
+		while (tools->lexed[i] && (!tools->lexed[i][0]))
 			i++;
-		if (line[i] == '\0')
-			break ;
-		j = i;
-		while (line[i] && (!isspace(line[i]) || in_quotes))
+		if (istoken(tools->lexed[i][0]))
 		{
-			if ((line[i] == '"' || line[i] == '\'') && !in_quotes)
-			{
-				in_quotes = 1;
-				quote_char = line[i];
-			}
-			else if (line[i] == quote_char && in_quotes)
-			{
-				in_quotes = 0;
-				quote_char = '\0';
-			}
-			i++;
+			if (tools->lexed[i][0] == "|")
+				break ;
+			else
+				/*should record the redirect into redirect array?*/
+				handle_redirect(tools, c_index, i);
 		}
-		tools->parsed_commands[c_index].argv[k] = strndup(&line[j], i - j);
-		k++;
+		else if (!istoken(tools->lexed[i][0]))
+		{
+			command = ft_strjoin(command, tools->lexed[i]);
+			if (command == NULL)
+				error_exit(tools, 1);
+			ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
+			if (old_command)
+				free(old_command);
+			old_command = command;
+		}
+		if (tools->lexed[i][0] != '|')
+			i++;
 	}
-	tools->parsed_commands[c_index].argv[k] = NULL;
-	return (tools->parsed_commands[c_index].argv);
+	tools->parsed_commands[c_index]->line = command;
+	// keep pipes until redirects are recorded as well
+	// ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
+	return (i + 1);
 }
 
 int	count_arguments(char *line)
@@ -143,47 +141,48 @@ int	count_arguments(char *line)
 	return (count);
 }
 
-char	*make_full_line(t_tools *tools)
+char	**create_argv(t_tools *tools, char *line, int c_index)
 {
 	int		i;
 	int		j;
-	char	*command;
-	int		comm_index;
-	char	*old_command;
+	int		k;
+	int		in_quotes;
+	char	quote_char;
 
-	old_command = NULL;
-	command = NULL;
 	i = 0;
 	j = 0;
-	comm_index = 0;
-	// make full line
-	while (tools->lexed[i] && tools->lexed[i][0] != '|')
+	k = 0;
+	in_quotes = 0;
+	quote_char = '\0';
+	tools->parsed_commands[c_index]->argc = count_arguments(line);
+	tools->parsed_commands[c_index]->argv = ft_calloc((tools->parsed_commands[c_index]->argc
+				+ 1), sizeof(char *));
+	while (line[i])
 	{
-		while (tools->lexed[i] && !tools->lexed[i][0])
+		while (isspace(line[i]))
 			i++;
-		if (j == 0 && !istoken(tools->lexed[i][0]))
+		if (line[i] == '\0')
+			break ;
+		j = i;
+		while (line[i] && (!isspace(line[i]) || in_quotes))
 		{
-			// command = tools->lexed[i];
-			comm_index = i;
-		
-		}
-		if (!istoken(tools->lexed[i][0]))
-		{
-			command = ft_strjoin(command, tools->lexed[i]);
-			if (command == NULL)
-				error_exit(tools, 1);
-			ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
-			if (old_command)
-				free(old_command);
-			old_command = command;
-			j++;
-		}
-		if (tools->lexed[i][0] != '|')
+			if ((line[i] == '"' || line[i] == '\'') && !in_quotes)
+			{
+				in_quotes = 1;
+				quote_char = line[i];
+			}
+			else if (line[i] == quote_char && in_quotes)
+			{
+				in_quotes = 0;
+				quote_char = '\0';
+			}
 			i++;
+		}
+		tools->parsed_commands[c_index]->argv[k] = strndup(&line[j], i - j);
+		k++;
 	}
-	// keep pipes until redirects are recorded as well
-	// ft_bzero(tools->lexed[i], ft_strlen(tools->lexed[i]));
-	return (command);
+	tools->parsed_commands[c_index]->argv[k] = NULL;
+	return (tools->parsed_commands[c_index]->argv);
 }
 
 // DON'T NEED?

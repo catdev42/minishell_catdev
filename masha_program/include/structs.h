@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 20:00:21 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/23 20:49:50 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/24 20:26:58 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef struct s_tools
 	char		**lexed;
 	int			lex_len;
 	int			num_pipes;
-	t_parsed	*parsed_commands;
+	t_parsed	**parsed_commands;
 }				t_tools;
 
 // typedef struct line_saver
