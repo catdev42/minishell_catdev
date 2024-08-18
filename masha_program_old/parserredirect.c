@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 20:17:05 by myakoven          #+#    #+#             */
-/*   Updated: 2024/08/18 19:58:21 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/24 20:57:04 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	handle_redirect(t_tools *tools, int cmd_index, int lexed_index)
 	tokens[i] = get_token(tools->lexed[lexed_index]);
 	while ()
 }
-//TODO
 
 int	count_redirects(t_tools *tools, int cmd_index)
 {

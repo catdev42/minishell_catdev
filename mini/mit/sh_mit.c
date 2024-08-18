@@ -135,7 +135,7 @@ getcmd(char *buf, int nbuf)
 {
   printf(2, "$ ");
   memset(buf, 0, nbuf);
-  fgets(buf, nbuf);
+  gets(buf, nbuf);
   if(buf[0] == 0) // EOF
     return -1;
   return 0;
