@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:51:01 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/21 19:57:05 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:31:25 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,29 @@ int	main(int argc, char **argv, char **env)
 
 int	shell_loop(t_tools *tools)
 {
+	char *c_line;
 	while (1)
 	{
+		if (tools->line)
+			free(tools->line);
 		tools->line = readline("minishell: ");
 		if (!tools->line || !strncmp(tools->line, "exit", 5))
 			error_exit(tools, 3);
 		global_signal = 0;
-		if (full_line(tools->line))
+		if (valid_line(tools->line))
 			add_history(tools->line);
-		if (lexer(tools))
-		{
-			printf("%s\n", tools->line);
-			print_tab(tools->lexed);
-			parser(tools);
-		}
-		if (tools->line)
-			free(tools->line);
+		else
+			continue ;
+		c_line = clean_line(tools->line, ft_strlen(tools->line), tools);
+		ft_putstr_fd(c_line, 1);
+		ft_putstr_fd("\n", 1);
+
+		// if (lexer(tools))
+		// {
+		// 	printf("%s\n", tools->line);
+		// 	print_tab(tools->lexed);
+		// 	parser(tools);
+		// }
 		if (global_signal == SIGTERM) // TODO
 			break ;
 	}

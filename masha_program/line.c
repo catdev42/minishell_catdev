@@ -6,82 +6,108 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/08/18 22:41:51 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:50:03 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*clean_line(char *line, int linelen)
+// int		copy_quotes(char *c_line, char *line);
+// int	copy_pipe(char *c_line, char *line, int current_line_index);
+// char	*exp_c_line(char *cleanline, int *c_len, int extra_space);
+// int		copy_redirect(char *c_line, char *line, int current_line_index);
+
+char	*clean_line(char *line, int linelen, t_tools *tools)
 {
-	char	*cleanline;
+	char	*c_line;
 	int		i;
 	int		j;
-	char	quote_char;
+	int		c_len;
 
-	quote_char = 0;
-	i = 0;
-	j = 0;
-	linelen += 10;
-	cleanline = ft_calloc(linelen + 2, 1);
-	while (line[i] && j < linelen)
+	init_zero(&i, &j, NULL, &c_line);
+	c_len = linelen + 10;
+	c_line = ft_calloc(c_len + 2, 1);
+	if (!c_line)
+		error_exit(tools, 1);
+	while (line[i] && j < c_len)
 	{
+		if (i > 0 || j > 0)
+			j = ft_strlen(c_line);
+		if (c_len - j < (int)ft_strlen(line) + 10 - i)
+			c_line = exp_c_line(c_line, &c_len, ft_strlen(line) - i + 20);
 		if (line[i] == '\'' || line[i] == '"')
-		{
-			cleanline[j++] = line[i++];
-			quote_char = line[i - 1];
-			while (line[i] && line[i] != quote_char)
-			{
-				cleanline[j++] = line[i++];
-				if (j == linelen - 1 && i < ft_strlen(line) - 1)
-					cleanline = expand_cleanline(cleanline, &linelen);
-			}
-		}
-		else if (isspace(line[i]))
-		{
-			cleanline[j++] = ' ';
-			while (isspace(line[i]))
-				i++;
-		}
+			i = i + copy_quotes(&c_line[j], &line[i]);
 		else if (line[i] == '|')
-		{
-			if (j > 0 && cleanline[j - 1] != ' ')
-				cleanline[j++] = ' ';
-			cleanline[j++] = line[i++];
-			if (line[i] != ' ')
-				cleanline[j++] = ' ';
-		}
+			i = i + copy_pipe(&c_line[j], &line[i], i);
 		else if (line[i] == '>' || line[i] == '<')
-		{
-			if (j > 0 && cleanline[j - 1] != ' ')
-				cleanline[j++] = ' ';
-			cleanline[j++] = line[i++];
-			// Handle <<, >>, and <<<
-			while (line[i] == '>' || line[i] == '<')
-			{
-				cleanline[j++] = line[i++];
-				if (j == linelen - 1 && i < ft_strlen(line) - 1)
-					cleanline = expand_cleanline(cleanline, &linelen);
-			}
-			if (line[i - 1] == '>' || line[i - 1] == '<')
-				while (isspace(line[i]))
-					i++;
-		}
+			i = i + copy_redirect(&c_line[j], &line[i], i);
 		else
-			cleanline[j++] = line[i++];
-		if (j == linelen && i < linelen - 1)
-			cleanline = expand_cleanline(cleanline, &linelen);
+			c_line[j++] = line[i++];
 	}
-	return (cleanline);
+	return (c_line);
 }
 
-char	*expand_cleanline(char *cleanline, int *linelen)
+int	copy_quotes(char *c_line, char *line)
+{
+	char	quote_char;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = 0;
+	quote_char = line[i];
+	// if (current_line_index > 0)
+	// 	if (!isspace(line[i - 1]))
+	// 		c_line[j++] = ' ';
+	c_line[j++] = line[i++];
+	while (line[i] && line[i] != quote_char)
+		c_line[j++] = line[i++];
+	c_line[j++] = line[i++];
+	// if (!isspace(line[i]))
+	// 	c_line[j++] = ' ';
+	return (i);
+}
+int	copy_pipe(char *c_line, char *line, int current_line_index)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	i = 0;
+	if (current_line_index > 0)
+		if (!isspace(line[i - 1]))
+			c_line[j++] = ' ';
+	c_line[j++] = line[i++];
+	if (!isspace(line[i]))
+		c_line[j++] = ' ';
+	return (1);
+}
+
+int	copy_redirect(char *c_line, char *line, int current_line_index)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	i = 0;
+	if (current_line_index > 0)
+		if (c_line[i - 1] != ' ')
+			c_line[j++] = ' ';
+	while (line[i] == '>' || line[i] == '<')
+		c_line[j++] = line[i++];
+	if (line[i - 1] == '>' || line[i - 1] == '<')
+		while (isspace(line[i]))
+			i++;
+	return (i);
+}
+
+char	*exp_c_line(char *cleanline, int *c_len, int extra_space)
 {
 	char *new_cleanline;
 
-	new_cleanline = ft_calloc(ft_strlen(cleanline) + 11, 1);
-	ft_strlcpy(new_cleanline, cleanline, ft_strlen(cleanline) + 10);
+	new_cleanline = ft_calloc(ft_strlen(cleanline) + extra_space + 1, 1);
+	ft_strlcpy(new_cleanline, cleanline, ft_strlen(cleanline) + extra_space);
 	free(cleanline);
-	*linelen = *linelen + 10;
+	*c_len = *c_len + 10;
 	return (new_cleanline);
 }

@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:12:04 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/23 20:30:13 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:25:25 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # include <string.h>
 # include <unistd.h>
 
-#define UNEXP "syntax error near unexpected token "
-#define UNCLOSED "unclosed quotes "
+# define UNEXP "syntax error near unexpected token "
+# define UNCLOSED "unclosed quotes "
 
 // volatile sig_atomic_t	global_signal = 0;
 
@@ -39,6 +39,15 @@ int		shell_loop(t_tools *tools);
 void	new_line(void);
 void	handle_signals(int sig);
 void	init_sa(struct sigaction *sa);
+
+/************************/
+/******** line.c ********/
+/************************/
+int		copy_quotes(char *c_line, char *line);
+int	copy_pipe(char *c_line, char *line, int current_line_index);
+char	*exp_c_line(char *cleanline, int *c_len, int extra_space);
+int		copy_redirect(char *c_line, char *line, int current_line_index);
+char	*clean_line(char *line, int linelen, t_tools *tools);
 
 /************************/
 /******* built_ins.c ********/
@@ -70,8 +79,9 @@ int		get_matrix_len(char **matrix);
 /************************/
 /******* utils2.c ********/
 /************************/
-int		full_line(char *line);
+int		valid_line(char *line);
 void	ft_bspace(void *s, size_t n);
+void	init_zero(int *i, int *j, char *c, char **c_line);
 
 /************************/
 /******* error.c ********/
@@ -79,5 +89,6 @@ void	ft_bspace(void *s, size_t n);
 int		error_exit(t_tools *tools, int error);
 void	clean_tools(t_tools *tools);
 char	**free_array(char **res, int nb);
+int		print_error(char *errline, char *errarg);
 
 #endif

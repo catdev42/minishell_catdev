@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 17:15:14 by myakoven          #+#    #+#             */
-/*   Updated: 2024/07/16 22:35:23 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/08/22 14:59:51 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	isquote(char c)
 	return (c == '\'' || c == '\"');
 }
 
+/* Returns the number of spaces to skip -> add this to current index */
 int	skip_spaces(char *s)
 {
 	int	i;
