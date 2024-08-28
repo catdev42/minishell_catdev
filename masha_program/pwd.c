@@ -6,25 +6,12 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 14:13:16 by spitul            #+#    #+#             */
-/*   Updated: 2024/07/16 19:31:49 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/07/20 23:07:35 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-	Wanted to make a note on this for later:
-
-	c4a6c10% pwd ok
-	pwd: too many arguments
-
-	After the have the 2d command array maybe we can stick it in there?
-
-	void	pwd(t_tools *tools, char **cmd)?
-
-	i have to change all my perrors to ft_putstr_fd(str, 2) - oops
-
-*/
 
 void	pwd(t_tools *tools, cmd_t *cmd)
 {
@@ -53,3 +40,17 @@ void	pwd(t_tools *tools, cmd_t *cmd)
 		// perror is needed here because the message has to be completed by errno
 	}
 }
+
+/*
+	Wanted to make a note on this for later:
+
+	c4a6c10% pwd ok
+	pwd: too many arguments
+
+	After the have the 2d command array maybe we can stick it in there?
+
+	void	pwd(t_tools *tools, char **cmd)?
+
+	i have to change all my perrors to ft_putstr_fd(str, 2) - oops
+
+*/
