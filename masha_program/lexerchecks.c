@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/08/22 16:54:00 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:31:18 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ char	*get_redir_error(char *line, int i, int goodtokens)
 
 int	check_redirects(t_tools *tools)
 {
-	int	len;
+	// int	len;
 	int	i;
 
-	len = ft_strlen(tools->line);
+	// len = ft_strlen(tools->line);
 	i = 0;
 	while (tools->line[i])
 	{

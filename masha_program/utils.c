@@ -6,12 +6,12 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 17:15:14 by myakoven          #+#    #+#             */
-/*   Updated: 2024/08/22 14:59:51 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/08/28 22:52:24 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/* PRINTS A 2D ARRAY*/
 int	print_tab(char **envp)
 {
 	size_t	i;

@@ -10,13 +10,15 @@ LIBFT = ./libft/libft.a
 
 HEADERS 	:= ./include
 OBJDIR		:= ./obj
-SRC     	:= main.c  utils.c utils2.c error.c init.c env.c  expand.c lexerchecks.c line.c
+SRC     	:= main.c  utils.c utils2.c error.c init.c  line.c env.c  expand.c lexerchecks.c
 # parser.c lexer.c 
+#
 				
 OBJS     	:= $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 
-CC      	:= cc
-CFLAGS  	:= -Wall -Wextra -Werror -g -fPIC
+CC      	:= cc 
+CFLAGS  	:= -Wall -Wextra -Werror -g -fPIC -I/usr/local/opt/readline/include
+LDFLAGS 	:= -L/usr/local/opt/readline/lib -lreadline
 
 #------------------------------------------------#
 #   RECIPES                                      #
@@ -34,7 +36,7 @@ runlibft:
 
 
 $(NAME): runlibft $(OBJS) 
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME) 
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $(NAME) 
 
 clean:
 	rm -f $(OBJS)
