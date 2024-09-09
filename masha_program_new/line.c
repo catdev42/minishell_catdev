@@ -6,28 +6,28 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/09/09 21:01:54 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/09/09 21:12:09 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "./include/minishell.h"
 
 char	*clean_line(char *line, int linelen, t_tools *tools)
 {
 	char	*c_line;
 	int		i;
 	int		j;
-	int		c_len;
+	// int		c_len;
 
 	init_zero(&i, &j, NULL, &c_line);
-	c_len = linelen * 2;
-	c_line = ft_calloc(c_len + 2, 1);
+	tools->cl_len = linelen * 2;
+	c_line = ft_calloc(tools->cl_len + 2, 1);
 	if (!c_line)
 		error_exit(tools, 1);
-	while (line[i] && j < c_len)
+	while (line[i] && j < tools->cl_len)
 	{
 		if (line[i] == '\'' || line[i] == '"')
-			i = i + copy_quotes(&c_line[j], &line[i]);
+			i = i + copy_quotes(&c_line[j], &line[i], tools);
 		else if (line[i] == '|')
 			i = i + copy_pipe(&c_line[j], &line[i], i);
 		else if (line[i] == '>' || line[i] == '<')
@@ -57,7 +57,7 @@ int	copy_spaces(char *c_line, char *line)
 	return (i);
 }
 
-int	copy_quotes(char *c_line, char *line)
+int	copy_quotes(char *c_line, char *line, int *c_len)
 {
 	char	quote_char;
 	int		i;
@@ -66,9 +66,14 @@ int	copy_quotes(char *c_line, char *line)
 	i = 0;
 	j = 0;
 	quote_char = line[i];
+	
 	c_line[j++] = line[i++];
 	while (line[i] && line[i] != quote_char)
+	{
+		if (quote_char == '\"' && line[i] == '$' && line[i-1] != '\'')
+			handle_var(&c_line[j], &line[i]); //TODO TODO TO DO
 		c_line[j++] = line[i++];
+	}
 	c_line[j++] = line[i++];
 	i = i + copy_spaces(&c_line[j], &line[i]);
 	return (i);

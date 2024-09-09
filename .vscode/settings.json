@@ -4,6 +4,9 @@
         "builtins.h": "c",
         "libft.h": "c",
         "parser.h": "c",
-        "structs.h": "c"
+        "structs.h": "c",
+        "stdbool.h": "c",
+        "readline.h": "c",
+        "history.h": "c"
     }
 }
