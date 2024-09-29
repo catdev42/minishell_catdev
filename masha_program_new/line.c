@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/09 19:07:28 by spitul            #+#    #+#             */
-/*   Updated: 2024/09/09 21:12:09 by myakoven         ###   ########.fr       */
+/*   Created: 2024/07/09 19:07:28 by myakoven          #+#    #+#             */
+/*   Updated: 2024/09/27 00:43:09 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,11 @@ char	*clean_line(char *line, int linelen, t_tools *tools)
 	char	*c_line;
 	int		i;
 	int		j;
-	// int		c_len;
 
 	init_zero(&i, &j, NULL, &c_line);
 	tools->cl_len = linelen * 2;
-	c_line = ft_calloc(tools->cl_len + 2, 1);
-	if (!c_line)
-		error_exit(tools, 1);
+	tools->cleanline = safe_calloc(tools->cl_len + 2, 1, tools);
+	c_line = tools->cleanline;
 	while (line[i] && j < tools->cl_len)
 	{
 		if (line[i] == '\'' || line[i] == '"')
@@ -34,12 +32,15 @@ char	*clean_line(char *line, int linelen, t_tools *tools)
 			i = i + copy_redirect(&c_line[j], &line[i], i);
 		else if (ft_isspace(line[i]))
 			i = i + copy_spaces(&c_line[j], &line[i]);
+		else if (line[i] == '$' && line[i - 1] != '\\' && line[i + 1] != ' ')
+			i = i + copy_var(&c_line[j], &line[i], tools);
 		else
 			c_line[j++] = line[i++];
 		j = ft_strlen(c_line);
 	}
 	return (c_line);
 }
+
 
 int	copy_spaces(char *c_line, char *line)
 {
@@ -57,7 +58,7 @@ int	copy_spaces(char *c_line, char *line)
 	return (i);
 }
 
-int	copy_quotes(char *c_line, char *line, int *c_len)
+int	copy_quotes(char *c_line, char *line, t_tools *tools)
 {
 	char	quote_char;
 	int		i;
@@ -66,13 +67,18 @@ int	copy_quotes(char *c_line, char *line, int *c_len)
 	i = 0;
 	j = 0;
 	quote_char = line[i];
-	
 	c_line[j++] = line[i++];
 	while (line[i] && line[i] != quote_char)
 	{
-		if (quote_char == '\"' && line[i] == '$' && line[i-1] != '\'')
-			handle_var(&c_line[j], &line[i]); //TODO TODO TO DO
-		c_line[j++] = line[i++];
+		if (line[i] == '$' && quote_char == '\"' && line[i - 1] != '\\'
+			&& line[i + 1] != ' ')
+		{
+			i = i + copy_var(&c_line[j], &line[i], tools);
+			while (c_line[j])
+				j++;
+		}
+		else
+			c_line[j++] = line[i++];
 	}
 	c_line[j++] = line[i++];
 	i = i + copy_spaces(&c_line[j], &line[i]);

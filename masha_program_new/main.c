@@ -6,7 +6,7 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 20:51:01 by myakoven          #+#    #+#             */
-/*   Updated: 2024/09/09 21:15:41 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/09/27 01:27:05 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,8 @@ int	main(int argc, char **argv, char **env)
 	return (0);
 }
 
-int	checkexit(t_tools *tools)
-{
-	if (!tools->line || (!strncmp(tools->line, "exit", 4)
-			&& (ft_isspace(tools->line[5]) || tools->line[5] == 0)))
-		error_exit(tools, 3);
-}
-
 int	shell_loop(t_tools *tools)
 {
-	char	*c_line;
-
 	while (1)
 	{
 		if (tools->line)
@@ -54,10 +45,13 @@ int	shell_loop(t_tools *tools)
 			add_history(tools->line);
 		else
 			continue ;
-		c_line = clean_line(tools->line, ft_strlen(tools->line), tools);
-		if (!c_line)
-			error_exit()
-		ft_putstr_fd(c_line, 1);
+		if (!validquotes(tools->line, tools))
+			continue ;
+		tools->cleanline = clean_line(tools->line, ft_strlen(tools->line),
+				tools);
+		// if (!tools->cleanline)
+		// 	error_exit(tools, 1);
+		ft_putstr_fd(tools->cleanline, 1);
 		ft_putstr_fd("\n", 1);
 		// if (lexer(tools))
 		// {
@@ -65,19 +59,47 @@ int	shell_loop(t_tools *tools)
 		// 	print_tab(tools->lexed);
 		// 	parser(tools);
 		// }
-		// if (global_signal == SIGTERM) // TODO
-		// 	break ;
+		if (global_signal == SIGTERM) // TODO? or done
+			break ;
 	}
 	clean_tools(tools);
 	return (0);
 }
+int	validquotes(char *line, t_tools *tools)
+{
+	int		i;
+	char	quote_char;
 
+	i = 0;
+	while (line[i])
+	{
+		if (isquote(line[i]))
+		{
+			quote_char = line[i];
+			i++;
+			while (line[i] && line[i] != quote_char)
+				i++;
+			if (!line[i])
+			{
+				print_error("unclosed quotes, please try again", NULL);
+				new_line();
+				return (0);
+			}
+		}
+		else
+			i++;
+	}
+	return (1);
+}
 
+/* Liretally checks if exit was typed into the line as the first command */
+int	checkexit(t_tools *tools)
+{
+	if (!tools->line || (!strncmp(tools->line, "exit", 4)
+			&& (ft_isspace(tools->line[5]) || tools->line[5] == 0)))
+		error_exit(tools, 3);
+}
 
-/*
-Input NULL or errline and/or errarg.
-If errline is provided, an error is printed to the screen,
-	is errarg is provided, it is appended to the error string*/
 void	new_line(void)
 {
 	printf("\n");

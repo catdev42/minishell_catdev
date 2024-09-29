@@ -6,12 +6,17 @@
 /*   By: myakoven <myakoven@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 19:22:37 by myakoven          #+#    #+#             */
-/*   Updated: 2024/09/09 21:20:05 by myakoven         ###   ########.fr       */
+/*   Updated: 2024/09/27 01:15:38 by myakoven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include/minishell.h"
 
+/*
+This description is wrong.
+Input NULL or errline and/or errarg.
+If errline is provided, an error is printed to the screen,
+is errarg is provided, it is appended to the error string*/
 int	print_error(char *errline, char *errarg)
 {
 	if (errline)
@@ -20,6 +25,7 @@ int	print_error(char *errline, char *errarg)
 		ft_putstr_fd(errline, 2);
 		if (errarg)
 		{
+			//CHECK THIS with ` backticks and single quotes TODO TO DO
 			ft_putstr_fd("`", 2);
 			ft_putstr_fd(errarg, 2);
 			ft_putstr_fd("\'", 2);
@@ -35,6 +41,8 @@ int	print_error(char *errline, char *errarg)
 2: quotes (changed behavior now, should delete)
 3: control_D (changed behavior, should delete)
 */
+
+
 int	error_exit(t_tools *tools, int error)
 {
 	clean_tools(tools);
